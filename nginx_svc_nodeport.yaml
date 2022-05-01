@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginxsvcnodeport
+spec:
+  selector:
+    app: nginx-deploy-pvc
+  type: NodePort                     #nodeport端口会自动生成
+  ports:
+  - protocol: TCP
+    port: 10888                      #这里是之前生成的clusterip的端口
+    targetPort: 80                   #这里是容器的端口
+    nodePort: 31111                   #可以自己定义端口，不写的话就是随机生成,注意Port P大写
+    name: nginx
+

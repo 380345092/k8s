@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginxsvc
+  labels:
+    name: nginxsvc
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 10080            #这个是对应的集群的service的隐射端口
+    targetPort: 80         #这个是对应的要要指定的deployment等服务的容器端口
+    name: nginx

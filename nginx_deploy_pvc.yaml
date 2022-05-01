@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment  
+metadata:
+  name:  nginx-deploy-pvc
+  labels:
+    app: nginx-deploy-pvc
+  namespace: default
+spec:
+  replicas: 3  # 期望的 Pod 副本数量，默认值为1
+  selector:  # Label Selector，必须匹配 Pod 模板中的标签
+    matchLabels:
+      app: nginx-deploy-pvc
+  strategy:
+    type: RollingUpdate  # 指定更新策略：RollingUpdate和Recreate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:  # Pod 模板
+    metadata:
+      labels:
+        app: nginx-deploy-pvc
+    spec:
+      containers:
+      - name: nginx-deploy-pvc
+        image: harbor.luwei.test/k8s/nginx:1.21.6
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+        ports:
+        - containerPort: 80
+        env:
+        - name: luadmin
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: username
+        - name: lupw
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: password
+        resources:   # 资源配额
+          limits:    # 限制资源（上限）
+            cpu: "0.5"   # CPU限制，单位是core数,也可以是主频
+            memory: "1Gi" # 内存限制
+          requests: # 请求资源（下限）
+            cpu: "0.2"  # CPU限制，单位是core数
+            memory: "100Mi"  # 内存限制
+      volumes:
+        - name: html
+          persistentVolumeClaim:
+            claimName: pvcnfs01nginx
