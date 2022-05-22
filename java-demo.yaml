@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: harbor.luwei.test/k8s/java-demo
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  selector:
+    app: web
+  type: NodePort                     #nodeport端口会自动生成
+  ports:
+  - protocol: TCP
+    port: 8080                     #这里是之前生成的clusterip的端口
+    targetPort: 8080                   #这里是容器的端口
+    nodePort: 31112                   #可以自己定义端口，不写的话就是随机生成,注意Port P大写
+    name: web
+
