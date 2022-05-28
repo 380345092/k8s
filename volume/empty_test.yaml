@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+  - name: write
+    image: harbor.luwei.test/k8s/centos:7.9.2009
+    command: ["bash","-c","for i in {1..100};do echo $i >> /data/hello; sleep 1;done"]
+    volumeMounts:
+    - name: data
+      mountPath: /data
+  - name: read
+    image: harbor.luwei.test/k8s/centos:7.9.2009
+    command: ["bash","-c","tail -f /data/hello"]
+    volumeMounts:
+    - name: data
+      mountPath: /data
+  volumes:
+  - name: data
+    emptyDir: {}
