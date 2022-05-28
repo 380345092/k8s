@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvgrafana
+  labels:
+    type: nfs
+spec:
+  storageClassName: grafananfs01
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /data/grafana/grafana01
+    server: 192.168.3.206
